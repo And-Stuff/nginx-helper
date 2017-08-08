@@ -204,6 +204,8 @@ namespace rtCamp\WP\Nginx {
 		function purgeUrl( $url, $feed = true ) {
 
 			global $rt_wp_nginx_helper;
+			
+			$url = trailingslashit( $url );
 
 			$this->log( "- Purging URL | " . $url );
 
@@ -763,6 +765,10 @@ namespace rtCamp\WP\Nginx {
 		/** Source - http://stackoverflow.com/a/1360437/156336 **/		
 		
 		function unlinkRecursive( $dir, $deleteRootToo ) {
+			if ( ! is_dir( $dir ) ) {
+				return;
+			}
+			
 			if ( ! $dh = opendir( $dir ) ) {
 				return;
 			}
@@ -772,7 +778,7 @@ namespace rtCamp\WP\Nginx {
 				}
 
 				if ( ! @unlink( $dir . '/' . $obj ) ) {
-					$this->unlinkRecursive( $dir . '/' . $obj, true );
+					$this->unlinkRecursive( $dir . '/' . $obj, false );
 				}
 			}
 			
